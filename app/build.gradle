@@ -10,12 +10,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-//        javaCompileOptions {
-//            //配置注解处理器参数
-//            annotationProcessorOptions {
-//                arguments = [moduleName: defaultConfig.getName()]
-//            }
-//        }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ jdsModuleName : project.getName() ]
+            }
+        }
     }
     buildTypes {
         debug {
@@ -45,5 +44,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     annotationProcessor project(":HjdsRouterProcessor")
 //    annotationProcessor  'com.github.piaoguodeyu:JRouterCompiler:1.0.6'
-    implementation 'com.github.piaoguodeyu:JdsRouter:2.0.0'
+    implementation 'com.github.piaoguodeyu:JdsRouter:2.0.6'
+    implementation project(path: ':LoginLib')
 }
