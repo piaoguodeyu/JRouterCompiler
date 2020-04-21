@@ -8,7 +8,7 @@ dependencies {
     //auto-service可以帮我们把编译注解自动注册到项目中
     api 'com.google.auto.service:auto-service:1.0-rc3'
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc6'
-    implementation 'com.github.piaoguodeyu:JdsRouter:3.0.0'
+    implementation 'com.github.piaoguodeyu:JdsRouter:3.0.1'
 }
 
 sourceCompatibility = "1.8"

@@ -2,11 +2,12 @@ package com.hjds.hjdsrouterprocessor.router;
 
 
 import com.google.auto.service.AutoService;
-import com.hjds.jrouterannotation.RouterProvider;
 import com.hjds.jrouterannotation.Router;
+import com.hjds.jrouterannotation.RouterProvider;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import java.util.Collections;
@@ -77,29 +78,76 @@ public class RouteAnnoProcessor extends AbstractProcessor {
     public void saveToJava(Set<TypeElement> set) {
         processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "RouteAnnoProcessorRouteAnno+moduleName=- " + moduleName);
         ClassName provider = ClassName.get(RouterProvider.class);
+
+
         String clazzName = "RouterProviderImp" + "$" + moduleName;
         TypeSpec.Builder mainActivityBuilder = TypeSpec.classBuilder(clazzName)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(provider);
 
+//        MethodSpec constructorBuilder = MethodSpec.constructorBuilder()
+//                .addStatement("init()")
+//                .addModifiers(Modifier.PUBLIC).build();
+//        mainActivityBuilder.addMethod(constructorBuilder);
+
+
+//        ClassName hashmap = ClassName.get(HashMap.class);
+//        FieldSpec filedspec = FieldSpec.builder(hashmap, "mMap")
+//                .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
+//                .initializer("new $T()", hashmap).build();
+
+//        mainActivityBuilder.addField(filedspec);
+
+
+        MethodSpec.Builder methodBuild = MethodSpec.methodBuilder("init")
+//                .addAnnotation(override)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+
+        mainActivityBuilder.addMethod(methodBuild.build());
+//        methodBuild.addCode("if (mMap.isEmpty()) {\n")
+//                .addCode("synchronized (RouterProvider.class) {\n");
+//        methodBuild.addCode("if (mMap.isEmpty()) {\n");
+
         CodeBlock.Builder codeBlock = CodeBlock.builder();
         for (TypeElement element : set) {
             Router routeAnno = element.getAnnotation(Router.class);
+//            "mMap.put($S,$T.class)"
+//            methodBuild.addStatement("mMap.put($S,$T.class)",
+//                    routeAnno.path(), ClassName.get(element));
             codeBlock.addStatement("mMap.put($S,$T.class)",
                     routeAnno.path(), ClassName.get(element));
         }
+//        methodBuild.addCode("}");
+//        methodBuild.addCode("}");
+//        methodBuild.addCode("}");
+//        MethodSpec onCreate = methodBuild
+//                .build();
+
+
+//        MethodSpec impmethod = MethodSpec.methodBuilder("getAllRouter")
+//                .addAnnotation(Override.class)
+//                .addModifiers(Modifier.PUBLIC)
+//                .addStatement("return mMap")
+//                .returns(hashmap).build();
+//        mainActivityBuilder.addMethod(impmethod);
+
 
         TypeSpec mainActivity = mainActivityBuilder
+//                .addMethod(onCreate)
                 .addStaticBlock(codeBlock.build())
                 .build();
+
         JavaFile file = JavaFile.builder("com.hjds.routerlibs", mainActivity).build();
+        log("88888888888888888888888888");
         try {
             file.writeTo(processingEnv.getFiler());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-
+    private void log(String msg) {
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, msg);
     }
 
     @Override
@@ -113,5 +161,4 @@ public class RouteAnnoProcessor extends AbstractProcessor {
         //
         return SourceVersion.latestSupported();
     }
-
 }
